@@ -12,6 +12,8 @@ plugins {                   //<1>
     //The idea and eclipse plugins provide helpers for 2 popular IDEs
     id 'eclipse'            //<9>
     id 'idea'               //<10>
+
+    id "nl.ikoodi.jenkins.jobdsl" version "0.4.1"
 }
 
 repositories {              //<11>
@@ -67,5 +69,11 @@ codenarc {  //<22>
         maxPriority1Violations 0
         maxPriority2Violations 10
         maxPriority3Violations 20
+    }
+}
+
+jenkinsJobDsl {
+    jobConfigs {
+        from fileTree(dir: 'src/ci/jobs')
     }
 }

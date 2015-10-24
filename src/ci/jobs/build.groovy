@@ -1,6 +1,6 @@
 def repo = 'https://github.com/dedickinson/shapes-demo.git'
 
-job('CI Build') {
+job('build') {
     description('Performs a per check-in build')
     scm {
         git {
@@ -18,25 +18,3 @@ job('CI Build') {
         shell('./gradlew clean test')
     }
 }
-
-/*
-job('Check') {
-  description('Runs code-checking tools')
-  triggers {
-        upstream('CI Build', 'SUCCESS')
-    }
-  steps {
-        shell('./gradlew check')
-    }
-}
-
-job('Documentation') {
-  description('Runs code documentation tools')
-  triggers {
-        upstream('CI Build', 'SUCCESS')
-    }
-  steps {
-        shell('./gradlew groovydoc')
-    }
-}
-*/
