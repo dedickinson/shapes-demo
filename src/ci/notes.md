@@ -10,14 +10,41 @@
 
 ## Prerequisites
 
-1. Download and install the Docker suite - I use [Docker Toolbox](http://www.docker.com/docker-toolbox).
-    1. Start the docker host, probably using Kitematic or `docker-machine start default`
+Download and install the Docker suite - I use [Docker Toolbox](http://www.docker.com/docker-toolbox) and this is a good starter as it also contains VirtualBox.
+
+Using `docker-machine` we'll create a new docker host named `development` and setup the terminal to use it. See the `src/ci/docker/development.sh` script.
+
+## Docker and the Gradle build
+
+Once you have the `development` host running you can now start a terminal from which to run Gradle.
+
+First up, establish your environment with:
+
+    eval "$(docker-machine env development)"
+
+You can now use the Docker-based task in `build.gradle`:
+
+    ./gradlew dockerBuildImage
+
+This will use the `development` host to build the image. Inside the `development` host you can now run:
+
+    docker run --rm groovytutorial/shapes-demo:1.0-SNAPSHOT
+
+## Setup the supporting infrastructure
+
+This work may not be something you do per-project as it'll be useful across a number of projects. We'll create a container environment that hosts the following items:
+
+* [Docker Registry v2](https://docs.docker.com/registry/)
+* [Apache Archiva](https://archiva.apache.org/index.cgi)
+* [Jenkins](http://jenkins-ci.org/)
+
+See the `src/ci/docker/support/support.sh` script.
 
 ## Setting up Jenkins
 
 See: `src/ci/docker/jenkins/Dockerfile`
 
-To build:
+To build the Jenkins image:
 
     docker build -t shapes-demo-jenkins .
 

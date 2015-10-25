@@ -13,7 +13,7 @@ plugins {                   //<1>
     id 'eclipse'            //<9>
     id 'idea'               //<10>
 
-    id "nl.ikoodi.jenkins.jobdsl" version "0.4.1"
+    id "com.bmuschko.docker-java-application" version "2.6.1"
 }
 
 repositories {              //<11>
@@ -30,6 +30,7 @@ project.ext {                           //<12>
 
 //project.name is set in the settings.gradle file using: rootProject.name = 'shapes-demo'
 project.with {  //<17>
+    applicationName = 'shapes-demo'
     group 'org.groovy_tutorial.shapes'
     version '1.0-SNAPSHOT'
     description = 'A tutorial covering basic Gradle usage and OO-development in Groovy'
@@ -40,6 +41,8 @@ project.with {  //<17>
     mainClassName = 'org.groovy_tutorial.shapes.app.Main'    //<19>
 
     wrapper.gradleVersion = "$gradleVersion"                //<20>
+
+    sourceCompatibility = 1.8
 }
 
 dependencies {  //<21>
@@ -72,8 +75,14 @@ codenarc {  //<22>
     }
 }
 
-jenkinsJobDsl {
-    jobConfigs {
-        from fileTree(dir: 'src/ci/jobs')
+docker {
+    url = System.getenv('DOCKER_HOST').replace('tcp://', 'https://')
+    certPath = new File(System.getenv('DOCKER_CERT_PATH'))
+
+    javaApplication {
+        baseImage = 'java:openjdk-8-jdk'
+        maintainer = 'Duncan Dickinson "duncan@dickinson.name"'
+        port = 8080
+        tag = "groovytutorial/$name:$version"
     }
 }
